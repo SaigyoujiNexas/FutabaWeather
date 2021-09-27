@@ -4,12 +4,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.saigyouji.futabaweather.R;
 import com.saigyouji.futabaweather.db.weather.Weather;
+import com.saigyouji.futabaweather.view.fragment.WeatherFragment;
 import com.saigyouji.futabaweather.view.holder.WeatherViewHolder;
 
 import java.util.List;
@@ -17,6 +22,7 @@ import java.util.List;
 public class MainPagerAdapter extends PagerAdapter
 {
     private List<View> viewList;
+
     public MainPagerAdapter(List<View> viewList) {
         this.viewList = viewList;
     }
@@ -25,6 +31,7 @@ public class MainPagerAdapter extends PagerAdapter
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView(viewList.get(position));
     }
+
 
     @NonNull
     @Override
