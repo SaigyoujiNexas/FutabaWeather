@@ -10,37 +10,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.saigyouji.futabaweather.db.weather.Weather;
+import com.saigyouji.futabaweather.view.holder.MainPagerHolder;
 import com.saigyouji.futabaweather.view.holder.WeatherViewHolder;
 
 import java.util.List;
 
-public class MainPagerAdapter extends PagerAdapter
+public class MainPagerAdapter extends RecyclerView.Adapter<MainPagerHolder>
 {
-    private List<View> viewList;
-    public MainPagerAdapter(List<View> viewList) {
-        this.viewList = viewList;
-    }
+    private List<Weather> viewList;
 
-    @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView(viewList.get(position));
+    public MainPagerAdapter(List<Weather> viewList) {
+        this.viewList = viewList;
     }
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        container.addView(viewList.get(position));
-        return viewList.get(position);
+    public MainPagerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return MainPagerHolder.create(parent);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull MainPagerHolder holder, int position) {
+        holder.bind(viewList.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
         return viewList.size();
-    }
-
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == object;
     }
 }
 

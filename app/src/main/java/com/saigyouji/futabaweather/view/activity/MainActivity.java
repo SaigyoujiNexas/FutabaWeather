@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,9 +33,9 @@ public class MainActivity extends BaseActivity {
 
     private RecyclerView weatherHourlyRecyclerView;
     private List<WeatherHourlyBean.HourlyBean> hourlyBeanList;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private TextView countryName;
-    private List<View> viewList;
+    private List<Weather> viewList;
    // private LiveData<List<Weather>> weatherLiveData;
     private MainPagerAdapter pagerAdapter;
 
@@ -74,38 +75,12 @@ public class MainActivity extends BaseActivity {
             countryName.setText(weathers.get(0).getCountryName());
             for (Weather w :
                     weathers) {
-
-                View v = inflater.inflate(R.layout.weather_fragment, null);
-                TextView weatherNowText = v.findViewById(R.id.tv_weather_now_weather);
-                TextView weatherNowTemp = v.findViewById(R.id.tv_weather_now_temperature);
-                RecyclerView weatherHourlyRecyclerView = v.findViewById(R.id.rv_weather_hourly);
-                RecyclerView weatherDailyRecyclerView = v.findViewById(R.id.rv_weather_daily);
-
-                var weatherHourly = w.getWeatherHourly();
-                var weatherDaily = w.getWeatherDaily();
-
-                var hourlyAdapter = new WeatherHourlyAdapter(new WeatherHourlyAdapter.WeatherHourlyDiff());
-                var hourlyManager = new LinearLayoutManager(this);
-                var dailyAdapter = new WeatherDailyAdapter(new WeatherDailyAdapter.WeatherDailyDiff());
-                var dailyManager = new LinearLayoutManager(this);
-
-                hourlyManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                weatherHourlyRecyclerView.setLayoutManager(hourlyManager);
-                weatherHourlyRecyclerView.setAdapter(hourlyAdapter);
-                hourlyAdapter.submitList(weatherHourly.getWeatherHourlyContentList());
-
-                weatherDailyRecyclerView.setLayoutManager(dailyManager);
-                weatherDailyRecyclerView.setAdapter(dailyAdapter);
-                dailyAdapter.submitList(weatherDaily.getWeatherDailyContents());
-
-                weatherNowTemp.setText(w.getWeatherNow().getTemperature());
-                weatherNowText.setText(w.getWeatherNow().getText());
-                viewList.add(v);
+                viewList.add(w);
             }
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                 }
 
                 @Override
@@ -116,7 +91,7 @@ public class MainActivity extends BaseActivity {
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
-
+                    super.onPageScrollStateChanged(state);
                 }
             });
             pagerAdapter.notifyDataSetChanged();
