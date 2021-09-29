@@ -1,6 +1,7 @@
 package com.saigyouji.futabaweather.repository;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -19,6 +20,7 @@ import com.saigyouji.futabaweather.db.weather.WeatherDatabase;
 import com.saigyouji.futabaweather.db.weather.WeatherNow;
 import com.saigyouji.futabaweather.db.weather.weatherDaily.WeatherDaily;
 import com.saigyouji.futabaweather.db.weather.weatherHourly.WeatherHourly;
+import com.saigyouji.futabaweather.service.LocationService;
 import com.saigyouji.futabaweather.utils.ContentUtil;
 import com.saigyouji.futabaweather.utils.MyApplication;
 import com.saigyouji.futabaweather.utils.ThreadPool;
@@ -66,9 +68,10 @@ public class WeatherRepository
     {
         weatherDao.update(weathers);
     }
-    public void updateWeathers(List<Weather> weathers) {
 
-            Log.d(TAG, "updateWeathers: weathers get complete" + weathers.size());
+    public void updateWeathers(List<Weather> weathers) {
+            MyApplication.getApplication().startService
+                    (new Intent(MyApplication.getContext(), LocationService.class));
 
             for (int i = 0; i < weathers.size(); i++) {
                 Weather w = weathers.get(i);
@@ -137,12 +140,11 @@ public class WeatherRepository
                 weatherNowBea[0] = weatherNowBean;
                 Message message = new Message();
                 message.what = WEATHER_GET_NOW;
-                //           message.obj = weatherNowBean;
                 handler.sendMessage(message);
                 QWeather.getWeather24Hourly(MyApplication.getContext(), wId, new QWeather.OnResultWeatherHourlyListener() {
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.w(TAG, "onError: "  + throwable.getMessage() );
+                        Log.w(TAG, "onError: "  + throwable.getMessage());
                     }
 
                     @Override

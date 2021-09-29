@@ -13,11 +13,11 @@
         android:text="今天"/>
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="26dp"
         android:layout_weight="4"
         android:layout_gravity="center|center_horizontal"
         android:id="@+id/iv_weather_daily_icon"
-        android:src="@mipmap/icon_100d"/>
+        android:src="@mipmap/icon_100"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

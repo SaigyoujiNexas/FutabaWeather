@@ -28,7 +28,6 @@ public class LocationService extends Service
             ContentUtil.setNowCountryName(aMapLocation.getDistrict());
             Log.d(TAG, "Now the location is: " + aMapLocation.getDistrict());
    //         weatherRepository.updateWeathers();
-            startActivity(new Intent(this, MainActivity.class));
 
 
         }
@@ -45,12 +44,15 @@ public class LocationService extends Service
         super.onCreate();
         Log.d(TAG, "onCreate: location Service created");
         weatherRepository = new WeatherRepository(getApplication());
+
         mapLocationClient = new AMapLocationClient(getApplicationContext());
         AMapLocationClientOption option = new AMapLocationClientOption();
+
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         option.setInterval(10000);
         option.setHttpTimeOut(20000);
         option.setOnceLocation(true);
+
         mapLocationClient.setLocationListener(locationListener);
         mapLocationClient.setLocationOption(option);
         //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效

@@ -35,8 +35,8 @@ public class WeatherDailyHolder extends RecyclerView.ViewHolder
     public void bind(String time, int iconId, String maxTemp, String minTemp)
     {
         weatherDailyTime.setText(time);
-        weatherDailyIcon.setImageResource(R.mipmap.icon_100d);
-        weatherDailyMinTemp.setText(minTemp);
-        weatherDailyMaxTemp.setText(maxTemp);
+        weatherDailyIcon.setImageResource(iconId);
+        weatherDailyMinTemp.setText(minTemp+ "°");
+        weatherDailyMaxTemp.setText(maxTemp+ "°");
     }
 }

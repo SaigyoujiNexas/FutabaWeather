@@ -28,10 +28,13 @@ public class FirstStartService extends Service
         Log.d(TAG, "onStartCommand: ");
    //     ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
  //       progressDialog.show();
-        weatherRepository.insertWeatherFromInternet("auto");
-   //     Weather weather = new Weather();
-     //   weather.setWeatherId("auto");
-      //  weatherRepository.insert(weather);
+    //    weatherRepository.insertWeatherFromInternet("auto");
+        Weather weather = new Weather();
+        weather.setWeatherId("auto");
+        weatherRepository.insert(weather);
+        Weather weather2 = new Weather();
+        weather2.setWeatherId("101010100");
+        weatherRepository.insert(weather2);
         countryGetTask = new CountryGetTask(listener);
         countryGetTask.startGet();
         SpUtils.putBoolean(getApplicationContext(), "first_start", false);

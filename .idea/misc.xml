@@ -4,9 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_main.xml" value="0.11574074074074074" />
+        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_search.xml" value="0.15364583333333334" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_splash.xml" value="0.1296875" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_test.xml" value="0.25364583333333335" />
-        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/element_weather_daily.xml" value="0.536" />
+        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/element_weather_daily.xml" value="0.264" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/element_weather_hourly.xml" value="0.4" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/item_weather.xml" value="0.12291666666666666" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/item_weather_daily.xml" value="0.264" />
@@ -14,6 +15,7 @@
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/item_weather_now.xml" value="0.264" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/room_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/weather_fragment.xml" value="0.23844537815126052" />
+        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/xml/searchable.xml" value="0.1" />
       </map>
     </option>
   </component>

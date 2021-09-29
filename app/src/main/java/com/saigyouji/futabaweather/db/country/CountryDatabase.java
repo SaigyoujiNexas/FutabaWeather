@@ -23,7 +23,7 @@ public  abstract class CountryDatabase extends RoomDatabase
             synchronized (CountryDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext()
-                            , CountryDatabase.class, "country_database").build();
+                            , CountryDatabase.class, "country_database").allowMainThreadQueries().build();
                 }
             }
         }

@@ -14,7 +14,6 @@ import java.util.List;
 
 public class BaseActivity extends AppCompatActivity
 {
-    private static List<Activity> applicationList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -31,4 +30,5 @@ public class BaseActivity extends AppCompatActivity
         ActivityCollector.removeActivity(this);
         super.onDestroy();
     }
+
 }

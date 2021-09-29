@@ -53,6 +53,7 @@
             android:layout_margin="10dp"
             android:id="@+id/iv_add_city"/>
     </RelativeLayout>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_weather"
         android:layout_width="match_parent"

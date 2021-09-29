@@ -39,7 +39,7 @@ public class WeatherHourlyHolder extends RecyclerView.ViewHolder
             hourlyTime = "null";
         weatherHourlyTime.setText(hourlyTime.substring(11, 16));
         weatherHourlyText.setText(hourlyText);
-    //    weatherHourlyIcon.setImageResource(iconId);
-        weatherHourlyTemp.setText(hourlyTemp);
+        weatherHourlyIcon.setImageResource(iconId);
+        weatherHourlyTemp.setText(hourlyTemp + "°");
     }
 }

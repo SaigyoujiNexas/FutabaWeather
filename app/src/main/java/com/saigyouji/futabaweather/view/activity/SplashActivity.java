@@ -6,18 +6,25 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.saigyouji.futabaweather.R;
 import com.saigyouji.futabaweather.service.LocationService;
+import com.saigyouji.futabaweather.utils.ActivityCollector;
 import com.saigyouji.futabaweather.utils.BaseActivity;
+import com.saigyouji.futabaweather.utils.MyApplication;
 import com.saigyouji.futabaweather.utils.SpUtils;
 import com.saigyouji.futabaweather.service.FirstStartService;
 import com.saigyouji.futabaweather.viewModel.WeatherViewModel;
@@ -26,28 +33,19 @@ public class SplashActivity extends BaseActivity {
     private final int REQUEST_PERMISSION_LOCATION = 10;
     private static final String TAG = "SplashActivity";
     private static WeatherViewModel weatherViewModel;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        initPermission();
-
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
+        initPermission();
         Button buttonTest = findViewById(R.id.b_test_button);
         buttonTest.setOnClickListener((v) ->{
             startActivity(new Intent(SplashActivity.this, TestActivity.class));
         });
         Log.d(TAG, "onCreate: this will start initPermission");
-        if(SpUtils.getBoolean(this, "first_start", true) == true)
-            onFirstStart();
-
-      //  weatherViewModel.updateAllWeathers();
-  //      startIntent();
     }
-
     private void onFirstStart()
     {
         Log.d(TAG, "onCreate: First Start");
@@ -68,7 +66,7 @@ public class SplashActivity extends BaseActivity {
                     REQUEST_PERMISSION_LOCATION);
         } else {
             startService(new Intent(this, LocationService.class));
-  //          startIntent();
+            startIntent();
         }
     }
 
@@ -79,21 +77,54 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults)
+    {
+        boolean requestSuccess = true;
         switch (requestCode) {
             case REQUEST_PERMISSION_LOCATION:
-            startService(new Intent(this, LocationService.class));
-     //           startIntent();
+                if(grantResults.length > 0)
+                {
+                    for(int i = 0; i < grantResults.length; i++)
+                    {
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED)
+                        {
+                            Log.d(TAG, "onRequestPermissionsResult: no permission");
+                            requestSuccess = false;
+                            Toast.makeText(this, "无权限！", Toast.LENGTH_LONG).show();
+                            ActivityCollector.finishAll();
+                        }
+                    }
+                    if(requestSuccess == true)
+                    {
+                        startIntent();
+                    }
+                }
                 break;
             default:
                 break;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
     private void startIntent() {
+        if(SpUtils.getBoolean(this, "first_start", true) == true)
+            onFirstStart();
+        weatherViewModel.updateAllWeathers(weatherViewModel.getAllWeathersByList());
+        //set the time , after this start the main activity
+        var manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        long triggerAtTime = SystemClock.elapsedRealtime() + 5 * 1000;
+        var intent = new Intent(this, MainActivity.class);
+        var pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pendingIntent);
+    }
 
-        startActivity(new Intent(this, MainActivity.class));
+    @Override
+    protected void onStop() {
+        super.onStop();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

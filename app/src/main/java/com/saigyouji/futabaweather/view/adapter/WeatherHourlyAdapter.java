@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter;
 
 import com.saigyouji.futabaweather.db.weather.weatherHourly.WeatherHourly;
 import com.saigyouji.futabaweather.db.weather.weatherHourly.WeatherHourlyContent;
+import com.saigyouji.futabaweather.utils.PicUtil;
 import com.saigyouji.futabaweather.view.holder.WeatherHourlyHolder;
 
 public class WeatherHourlyAdapter extends ListAdapter<WeatherHourlyContent, WeatherHourlyHolder>
@@ -26,7 +27,7 @@ public class WeatherHourlyAdapter extends ListAdapter<WeatherHourlyContent, Weat
     public void onBindViewHolder(@NonNull WeatherHourlyHolder holder, int position) {
         var item = getItem(position);
         String time =  item.getFxDate();
-        int icon =  Integer.parseInt(item.getIcon());
+        int icon = PicUtil.getWeatherIcon(item.getIcon());
         String temp = item.getTemperature();
         String text = item.getText();
         holder.bind(temp, icon,text, time);
@@ -34,7 +35,7 @@ public class WeatherHourlyAdapter extends ListAdapter<WeatherHourlyContent, Weat
     public static class WeatherHourlyDiff extends DiffUtil.ItemCallback<WeatherHourlyContent>{
         @Override
         public boolean areItemsTheSame(@NonNull WeatherHourlyContent oldItem, @NonNull WeatherHourlyContent newItem) {
-            return oldItem ==  newItem;
+            return oldItem == newItem;
         }
 
         @Override

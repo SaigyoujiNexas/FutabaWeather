@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="Light_96">96sp</dimen>
+    <dimen name="Light_60">60sp</dimen>
+    <dimen name="Regular_48">48sp</dimen>
+    <dimen name="Regular_34">34sp</dimen>
+    <dimen name="Regular_24">24sp</dimen>
+    <dimen name="Medium_20">20sp</dimen>
+    <dimen name="Regular_16">16sp</dimen>
+    <dimen name="Medium_14"></dimen>
+
+</resources>

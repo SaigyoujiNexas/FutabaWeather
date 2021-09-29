@@ -20,6 +20,7 @@ import java.util.List;
 public class TestAdapter extends ListAdapter<Weather, TestAdapter.ViewHolder>
 {
     private static final String TAG = "TestAdapter";
+
     class ViewHolder extends RecyclerView.ViewHolder
     {
         private final TextView   textView;
