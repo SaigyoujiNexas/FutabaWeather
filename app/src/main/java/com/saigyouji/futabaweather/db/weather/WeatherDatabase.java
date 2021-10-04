@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 public abstract class WeatherDatabase extends RoomDatabase
 {
     public abstract WeatherDao weatherDao();
-    private static final int NUM_OF_THREADS = 4;
+    private static final int NUM_OF_THREADS = 10;
     private volatile static WeatherDatabase INSTANCE;
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUM_OF_THREADS);

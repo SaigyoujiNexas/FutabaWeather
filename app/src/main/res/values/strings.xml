@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FutabaWeather</string>
+    <string name="add_city">添加城市</string>
 </resources>

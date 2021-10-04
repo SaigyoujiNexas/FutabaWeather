@@ -15,7 +15,7 @@ import java.util.List;
 public class CountryViewModel extends AndroidViewModel
 {
     private CountryRepository repository;
-    private LiveData<List<Country>> AllCountries;
+    private List<Country> AllCountries;
 
 
     public CountryViewModel(@NonNull Application application) {
@@ -23,7 +23,14 @@ public class CountryViewModel extends AndroidViewModel
         repository = new CountryRepository(application);
         AllCountries = repository.getAllCountries();
     }
-    public LiveData<List<Country>> getCountriesByName(String name)
+
+    public List<Country> getAllCountries()
+    {
+        return repository.getAllCountries();
+    }
+
+
+    public List<Country> getCountriesByName(String name)
     {
         return repository.getCountriesByCountryName(name);
     }

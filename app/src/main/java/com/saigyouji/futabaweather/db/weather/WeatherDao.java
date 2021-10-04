@@ -22,12 +22,12 @@ public interface WeatherDao
     @Query("SELECT * FROM  weather_table WHERE weatherId IS :weatherId")
     public Weather getWeatherByWeatherId(String weatherId);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     public void update(Weather... weathers);
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insert(Weather...weather);
+
     @Delete
     public void delete(Weather weather);
 }

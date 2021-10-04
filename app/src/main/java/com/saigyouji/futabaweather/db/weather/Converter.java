@@ -49,6 +49,7 @@ public class Converter
     {
         return  (WeatherDaily)new Gson().fromJson(str, WeatherDaily.class);
     }
+
     @TypeConverter
     public static String  fromWeatherDailyToString (WeatherDaily weatherDaily)
     {

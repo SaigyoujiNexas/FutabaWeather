@@ -14,6 +14,7 @@ import com.qweather.sdk.bean.weather.WeatherDailyBean;
 import com.qweather.sdk.bean.weather.WeatherHourlyBean;
 import com.qweather.sdk.bean.weather.WeatherNowBean;
 import com.qweather.sdk.view.QWeather;
+import com.saigyouji.futabaweather.db.country.CountryDatabase;
 import com.saigyouji.futabaweather.db.weather.Weather;
 import com.saigyouji.futabaweather.db.weather.WeatherDao;
 import com.saigyouji.futabaweather.db.weather.WeatherDatabase;
@@ -27,107 +28,125 @@ import com.saigyouji.futabaweather.utils.ThreadPool;
 
 import java.util.List;
 
-public class WeatherRepository
-{
+public class WeatherRepository {
     private static final String TAG = "WeatherRepository";
-    private  LiveData<List<Weather>> AllWeathers;
+    private LiveData<List<Weather>> AllWeathers;
     private WeatherDao weatherDao;
+    private CountryRepository countryRepository;
+
 
     /**
      * handler message number
      */
     private static final int WEATHER_GET_NOW = 1;
     private static final int WEATHER_GET_DAILY = 2;
-    private static final int  WEATHER_GET_HOURLY = 3;
-    private static final int  WEATHER_GET_COUNTRY  =  4;
+    private static final int WEATHER_GET_HOURLY = 3;
+    private static final int WEATHER_GET_COUNTRY = 4;
+
+    private Handler handler;
 
 
-    public WeatherRepository(Application application)
-    {
+    public WeatherRepository(Application application) {
         var db = WeatherDatabase.getWeatherDatabase(application);
         weatherDao = db.weatherDao();
         AllWeathers = weatherDao.getAllWeather();
-    //    list = weatherDao.getAllWeathersByList();
+        countryRepository = new CountryRepository(application);
+        //    list = weatherDao.getAllWeathersByList();
     }
+
     public LiveData<List<Weather>> getAllWeathers() {
         return AllWeathers;
     }
-    public List<Weather> getAllWeathersByList()
-    {
+
+    public List<Weather> getAllWeathersByList() {
         return weatherDao.getAllWeathersByList();
     }
 
-    public void insert(Weather...weathers)
-    {
+    public void insert(Weather... weathers) {
         WeatherDatabase.databaseWriteExecutor.execute(() -> {
             weatherDao.insert(weathers);
             Log.d(TAG, "insert: " + weathers[0].getWeatherId());
         });
     }
-    public void update(Weather... weathers)
-    {
-        weatherDao.update(weathers);
+
+    public void update(Weather... weathers) {
+        WeatherDatabase.databaseWriteExecutor.execute(() -> {
+            weatherDao.update(weathers);
+            Log.d(TAG, "update: " + weathers[0].getWeatherId());
+        });
     }
 
-    public void updateWeathers(List<Weather> weathers) {
-            MyApplication.getApplication().startService
-                    (new Intent(MyApplication.getContext(), LocationService.class));
+    public void update(List<Weather> weathers) {
+        MyApplication.getApplication().startService
+                (new Intent(MyApplication.getContext(), LocationService.class));
+        for (int i = 0; i < weathers.size(); i++) {
+            Weather w = weathers.get(i);
+            Log.d(TAG, "updateWeathers: the item is" + w.getCountryName());
+            updateWeatherFromInternet(w);
+        }
+        Log.d(TAG, "updateWeathers: update complete");
+    }
 
-            for (int i = 0; i < weathers.size(); i++) {
-                Weather w = weathers.get(i);
-                Log.d(TAG, "updateWeathers: the item is" + w.getCountryName());
-                insertWeatherFromInternet(w.getWeatherId());
+    public void updateWeatherFromInternet(Weather weather) {
+        final String weatherId;
+        String countryName = weather.getCountryName();
+        if (weather.getWeatherId().equals("auto")) {
+            weatherId = ContentUtil.getNowLon() + "," + ContentUtil.getNowLat();
+            countryName = ContentUtil.getNowCountryName();
+            weather.setCountryName(countryName);
+        } else {
+            weatherId = weather.getWeatherId();
+        }
+        QWeather.getWeatherNow(MyApplication.getContext(), weatherId, new QWeather.OnResultWeatherNowListener() {
+            @Override
+            public void onError(Throwable throwable) {
+                Log.w(TAG, "onError: " + throwable.getMessage());
             }
-            Log.d(TAG, "updateWeathers: update complete");
+
+            @Override
+            public void onSuccess(WeatherNowBean weatherNowBean) {
+                Log.d(TAG, "onSuccess: weatherNow");
+                weather.setWeatherNow(new WeatherNow(weatherNowBean));
+                QWeather.getWeather24Hourly(MyApplication.getContext(), weatherId, new QWeather.OnResultWeatherHourlyListener() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.w(TAG, "onError: " + throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(WeatherHourlyBean weatherHourlyBean) {
+                        Log.d(TAG, "onSuccess: weatherHourly");
+                        weather.setWeatherHourly(new WeatherHourly(weatherHourlyBean, weather.getWeatherId()));
+                        QWeather.getWeather7D(MyApplication.getContext(), weatherId, new QWeather.OnResultWeatherDailyListener() {
+                            @Override
+                            public void onError(Throwable throwable) {
+                                Log.w(TAG, "onError: " + throwable.getMessage());
+                            }
+
+                            @Override
+                            public void onSuccess(WeatherDailyBean weatherDailyBean) {
+                                Log.d(TAG, "onSuccess: weatherDaily");
+                                weather.setWeatherDaily(new WeatherDaily(weatherDailyBean, weather.getWeatherId()));
+                                update(weather);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
-    public Weather insertWeatherFromInternet(String weatherId)
-    {
+
+    public void insertWeatherFromInternet(String weatherId) {
         var weather = new Weather();
         weather.setWeatherId(weatherId);
-
         final String wId;
-        if(weatherId.equals("auto"))
-        {
-            wId= ContentUtil.getNowLon() + "," + ContentUtil.getNowLat();
+        if (weatherId.equals("auto")) {
             weather.setCountryName(ContentUtil.getNowCountryName());
-        }
-        else
-        {
+            wId = ContentUtil.getNowLon() + "," + ContentUtil.getNowLat();
+        } else {
             wId = weatherId;
-            CountryRepository countryRepository = new CountryRepository(MyApplication.getApplication());
-            var country = countryRepository.getCountryByWeatherId(weatherId);
-            weather.setCountryName(country.getCountryName());
+            weather.setCountryName(countryRepository.getCountryByWeatherId(weatherId).getCountryName());
         }
-        final WeatherNowBean[] weatherNowBea = new WeatherNowBean[1];
-        final WeatherDailyBean[] weatherDailyBeans = new WeatherDailyBean[1];
-        final WeatherHourlyBean[] weatherHourlyBeans = new WeatherHourlyBean[1];
-
-        var handler = new Handler(Looper.myLooper())
-        {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                switch (msg.what)
-                {
-                    case WEATHER_GET_NOW:
-                        WeatherNow weatherNow = new WeatherNow(weatherNowBea[0]);
-                        Log.d(TAG, "handleMessage: weatherNow" + weatherNow.getText());
-                        weather.setWeatherNow(weatherNow);
-                        break;
-                    case WEATHER_GET_HOURLY:
-                        WeatherHourly weatherHourly = new WeatherHourly(weatherHourlyBeans[0], weatherId);
-                        Log.d(TAG, "handleMessage: weatherHourly" + weatherHourly.getWeatherHourlyContentList().get(0).getText());
-                        weather.setWeatherHourly(weatherHourly);
-                        break;
-                    case WEATHER_GET_DAILY:
-                        WeatherDaily weatherDaily = new WeatherDaily(weatherDailyBeans[0], weatherId);
-                        Log.d(TAG, "handleMessage: weatherDaily" + weatherDaily.getWeatherDailyContents().get(0).getTextDay());
-                        weather.setWeatherDaily(weatherDaily);
-                        insert(weather);
-                }
-                super.handleMessage(msg);
-            }
-        };
-
         QWeather.getWeatherNow(MyApplication.getContext(), wId, new QWeather.OnResultWeatherNowListener() {
             @Override
             public void onError(Throwable throwable) {
@@ -135,25 +154,19 @@ public class WeatherRepository
             }
 
             @Override
-            public void onSuccess(WeatherNowBean weatherNowBean)
-            {
-                weatherNowBea[0] = weatherNowBean;
-                Message message = new Message();
-                message.what = WEATHER_GET_NOW;
-                handler.sendMessage(message);
+            public void onSuccess(WeatherNowBean weatherNowBean) {
+                Log.d(TAG, "onSuccess: weatherNow");
+                weather.setWeatherNow(new WeatherNow(weatherNowBean));
                 QWeather.getWeather24Hourly(MyApplication.getContext(), wId, new QWeather.OnResultWeatherHourlyListener() {
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.w(TAG, "onError: "  + throwable.getMessage());
+                        Log.w(TAG, "onError: " + throwable.getMessage());
                     }
 
                     @Override
-                    public void onSuccess(WeatherHourlyBean weatherHourlyBean)
-                    {
-                        weatherHourlyBeans[0] = weatherHourlyBean;
-                        Message message =   new Message();
-                        message.what = WEATHER_GET_HOURLY;
-                        handler.sendMessage(message);
+                    public void onSuccess(WeatherHourlyBean weatherHourlyBean) {
+                        Log.d(TAG, "onSuccess: weatherHourly");
+                        weather.setWeatherHourly(new WeatherHourly(weatherHourlyBean, weatherId));
                         QWeather.getWeather7D(MyApplication.getContext(), wId, new QWeather.OnResultWeatherDailyListener() {
                             @Override
                             public void onError(Throwable throwable) {
@@ -161,20 +174,16 @@ public class WeatherRepository
                             }
 
                             @Override
-                            public void onSuccess(WeatherDailyBean weatherDailyBean)
-                            {
-                                weatherDailyBeans[0] = weatherDailyBean;
-                                Message message = new Message();
-                                message.what = WEATHER_GET_DAILY;
-                                handler.sendMessage(message);
+                            public void onSuccess(WeatherDailyBean weatherDailyBean) {
+                                Log.d(TAG, "onSuccess: weatherDaily");
+                                weather.setWeatherDaily(new WeatherDaily(weatherDailyBean, weatherId));
+                                insert(weather);
                             }
                         });
                     }
                 });
             }
         });
-        return weather;
     }
-
-
 }
+

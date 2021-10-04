@@ -26,15 +26,7 @@ public class FirstStartService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         Log.d(TAG, "onStartCommand: ");
-   //     ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
- //       progressDialog.show();
-    //    weatherRepository.insertWeatherFromInternet("auto");
-        Weather weather = new Weather();
-        weather.setWeatherId("auto");
-        weatherRepository.insert(weather);
-        Weather weather2 = new Weather();
-        weather2.setWeatherId("101010100");
-        weatherRepository.insert(weather2);
+        weatherRepository.insertWeatherFromInternet("auto");
         countryGetTask = new CountryGetTask(listener);
         countryGetTask.startGet();
         SpUtils.putBoolean(getApplicationContext(), "first_start", false);
@@ -56,7 +48,9 @@ public class FirstStartService extends Service
     };
 
     public FirstStartService()
-    {}
+    {
+
+    }
 
     @Nullable
     @Override

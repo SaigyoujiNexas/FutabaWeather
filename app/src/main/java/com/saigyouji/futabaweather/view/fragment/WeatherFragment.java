@@ -15,8 +15,7 @@ import com.saigyouji.futabaweather.R;
 
 public class WeatherFragment extends Fragment
 {
-    private ViewPager viewPager;
-    private PagerAdapter adapter;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

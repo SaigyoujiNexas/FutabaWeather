@@ -22,6 +22,7 @@ public class Weather implements Serializable
     @ColumnInfo(name = "weatherId")
    private String weatherId;
 
+
     @ColumnInfo(name = "countryName")
     private String countryName;
     @ColumnInfo(name = "weatherNow")

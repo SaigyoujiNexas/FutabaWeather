@@ -18,7 +18,7 @@ public class CountryRepository
 {
     private static final String TAG = "CountryRepository";
     private CountryDao countryDao;
-    private LiveData<List<Country>> AllCountries;
+    private List<Country> AllCountries;
 
     public CountryRepository(Application application)
     {
@@ -27,7 +27,7 @@ public class CountryRepository
         AllCountries = countryDao.getAllCountries();
     }
 
-    public LiveData<List<Country>> getCountriesByCountryName(String countryName)
+    public List<Country> getCountriesByCountryName(String countryName)
     {
         return countryDao.getCountriesByCountryName(countryName);
     }
@@ -36,7 +36,7 @@ public class CountryRepository
         return countryDao.getCountryBYWeatherId(weatherID);
     }
 
-    public LiveData<List<Country>> getAllCountries() {
+    public List<Country> getAllCountries() {
         return AllCountries;
     }
     public void insert(Country... countries)

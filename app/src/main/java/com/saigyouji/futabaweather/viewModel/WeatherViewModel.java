@@ -30,6 +30,8 @@ public class WeatherViewModel extends AndroidViewModel
     {
         return weatherRepository.getAllWeathersByList();
     }
+
+
     public void insert(Weather...weathers)
     {
         weatherRepository.insert(weathers);
@@ -39,8 +41,13 @@ public class WeatherViewModel extends AndroidViewModel
     {
         weatherRepository.insertWeatherFromInternet(weatherId);
     }
-    public void updateAllWeathers(List<Weather> weathers)
+
+    public void updateWeatherFromInternet(Weather weather)
     {
-        weatherRepository.updateWeathers(weathers);
+        weatherRepository.updateWeatherFromInternet(weather);
+    }
+    public void updateWeathersFromInternet(List<Weather> weathers)
+    {
+        weatherRepository.update(weathers);
     }
 }

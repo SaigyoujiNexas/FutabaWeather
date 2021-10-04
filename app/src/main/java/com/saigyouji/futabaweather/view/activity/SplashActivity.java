@@ -27,6 +27,7 @@ import com.saigyouji.futabaweather.utils.BaseActivity;
 import com.saigyouji.futabaweather.utils.MyApplication;
 import com.saigyouji.futabaweather.utils.SpUtils;
 import com.saigyouji.futabaweather.service.FirstStartService;
+import com.saigyouji.futabaweather.utils.ThreadPool;
 import com.saigyouji.futabaweather.viewModel.WeatherViewModel;
 
 public class SplashActivity extends BaseActivity {
@@ -108,8 +109,8 @@ public class SplashActivity extends BaseActivity {
     private void startIntent() {
         if(SpUtils.getBoolean(this, "first_start", true) == true)
             onFirstStart();
-        weatherViewModel.updateAllWeathers(weatherViewModel.getAllWeathersByList());
-        //set the time , after this start the main activity
+        var list = weatherViewModel.getAllWeathersByList();
+      // weatherViewModel.updateAllWeathers(list);
         var manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         long triggerAtTime = SystemClock.elapsedRealtime() + 5 * 1000;
         var intent = new Intent(this, MainActivity.class);

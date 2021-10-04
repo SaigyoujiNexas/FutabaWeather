@@ -56,7 +56,7 @@ public class TestAdapter extends ListAdapter<Weather, TestAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getTextViewWeather().setText(getItem(position).getWeatherId());
+        holder.getTextViewWeather().setText(getItem(position).getWeatherId() + getItem(position).getCountryName());
         WeatherDaily weatherDaily = getItem(position).getWeatherDaily();
         List<WeatherDailyContent>  weatherDailyContents = weatherDaily.getWeatherDailyContents();
         var array =weatherDailyContents;
