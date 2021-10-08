@@ -12,11 +12,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.saigyouji.futabaweather.R;
 import com.saigyouji.futabaweather.db.weather.Weather;
 import com.saigyouji.futabaweather.utils.BaseActivity;
+import com.saigyouji.futabaweather.utils.NetWork;
 import com.saigyouji.futabaweather.utils.ThreadPool;
+import com.saigyouji.futabaweather.view.ControlPart.MySwipeRefreshLayout;
 import com.saigyouji.futabaweather.view.adapter.MainPagerAdapter;
 import com.saigyouji.futabaweather.viewModel.WeatherViewModel;
 
@@ -32,7 +35,7 @@ public class MainActivity extends BaseActivity {
     private WeatherViewModel weatherViewModel;
     private static final String TAG = "MainActivity";
     private ImageView add_image;
-    private SwipeRefreshLayout refreshLayout;
+    private MySwipeRefreshLayout refreshLayout;
     private String weatherId;
     private Weather currentWeather;
 
@@ -44,6 +47,11 @@ public class MainActivity extends BaseActivity {
         update();
         setTransParentStatusBar();
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initWeatherView();
     }
 
@@ -63,10 +71,17 @@ public class MainActivity extends BaseActivity {
     }
     private void initView()
     {
+
         refreshLayout = findViewById(R.id.swipe_refresh);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.design_default_color_primary));
         refreshLayout.setOnRefreshListener(() -> {
+            if(NetWork.checkNetWorkIsConnected())
             weatherViewModel.updateWeatherFromInternet(currentWeather);
+            else
+                runOnUiThread(() -> {
+                    refreshLayout.setRefreshing(false);
+                    Toast.makeText(MainActivity.this, "No network is connected !", Toast.LENGTH_LONG).show();
+                });
         });
         viewPager = findViewById(R.id.vp_weather);
         viewList = new ArrayList<>();
@@ -87,17 +102,30 @@ public class MainActivity extends BaseActivity {
     private void initWeatherView()
     {
         weatherViewModel.getAllWeathers().observe(this, weathers -> {
+            refreshLayout.setRefreshing(false);
             viewList.clear();
+            if(currentWeather == null)
             currentWeather = weathers.get(0);
+            //else is on SwipeRefresh to refresh it.
             Log.d(TAG, "initWeatherView: observer");
             if(weathers.size() <= 0) {
                 countryName.setText("null");
             }
             else {
-                countryName.setText(weathers.get(0).getCountryName());
-                weatherId = weathers.get(0).getWeatherId();
+                countryName.setText(currentWeather.getCountryName());
+                weatherId = currentWeather.getWeatherId();
             }
             viewList.addAll(weathers);
+            for(int i = 0; i < viewList.size(); i++)
+            {
+                if(viewList.get(i).getWeatherId().equals(currentWeather.getWeatherId()))
+                {
+                    viewPager.setCurrentItem(i);
+                    break;
+                }
+            }
+            pagerAdapter.notifyDataSetChanged();
+            Log.d(TAG, "initWeatherView: " + pagerAdapter.getItemCount());
             viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -105,7 +133,7 @@ public class MainActivity extends BaseActivity {
                 }
                 @Override
                 public void onPageSelected(int position) {
-                    currentWeather = weathers.get(position);
+                    currentWeather = viewList.get(position);
                     countryName.setText(currentWeather.getCountryName());
                 }
 
@@ -114,9 +142,12 @@ public class MainActivity extends BaseActivity {
                     super.onPageScrollStateChanged(state);
                 }
             });
-            pagerAdapter.notifyDataSetChanged();
         });
-
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initWeatherView();
+    }
 }

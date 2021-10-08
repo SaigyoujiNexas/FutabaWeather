@@ -8,10 +8,12 @@
     tools:context=".view.activity.SearchActivity">
     <FrameLayout
         android:layout_width="match_parent"
+        android:id="@+id/manage_content"
         android:layout_height="match_parent">
         <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/manage_view"/>
+            android:name="com.saigyouji.futabaweather.view.fragment.ManageFragment"
+            />
     </FrameLayout>
 </LinearLayout>

@@ -25,6 +25,7 @@ import com.saigyouji.futabaweather.service.LocationService;
 import com.saigyouji.futabaweather.utils.ActivityCollector;
 import com.saigyouji.futabaweather.utils.BaseActivity;
 import com.saigyouji.futabaweather.utils.MyApplication;
+import com.saigyouji.futabaweather.utils.NetWork;
 import com.saigyouji.futabaweather.utils.SpUtils;
 import com.saigyouji.futabaweather.service.FirstStartService;
 import com.saigyouji.futabaweather.utils.ThreadPool;
@@ -108,14 +109,21 @@ public class SplashActivity extends BaseActivity {
     }
     private void startIntent() {
         if(SpUtils.getBoolean(this, "first_start", true) == true)
-            onFirstStart();
-        var list = weatherViewModel.getAllWeathersByList();
-      // weatherViewModel.updateAllWeathers(list);
+        {
+            if(NetWork.checkNetWorkIsConnected())
+                onFirstStart();
+            else
+            {
+                Toast.makeText(this, "No network! Initialize failed,Program will exit", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
         var manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         long triggerAtTime = SystemClock.elapsedRealtime() + 5 * 1000;
         var intent = new Intent(this, MainActivity.class);
         var pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pendingIntent);
+        return;
     }
 
     @Override

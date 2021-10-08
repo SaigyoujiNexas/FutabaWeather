@@ -29,5 +29,5 @@ public interface WeatherDao
     public void insert(Weather...weather);
 
     @Delete
-    public void delete(Weather weather);
+    public void delete(Weather...weather);
 }

@@ -6,8 +6,10 @@
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/drawable/ic_search.xml" value="0.16458333333333333" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_main.xml" value="0.11574074074074074" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_search.xml" value="0.2" />
+        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_setting.xml" value="0.1" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_splash.xml" value="0.1296875" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/activity_test.xml" value="0.25364583333333335" />
+        <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/blank_fragment.xml" value="0.11197916666666667" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/country_manage_frag.xml" value="0.152" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/element_weather_daily.xml" value="0.264" />
         <entry key="..\:/Android_series/FutabaWeather/app/src/main/res/layout/element_weather_hourly.xml" value="0.4" />

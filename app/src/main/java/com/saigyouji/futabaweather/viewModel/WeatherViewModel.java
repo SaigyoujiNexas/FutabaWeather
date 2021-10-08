@@ -23,6 +23,14 @@ public class WeatherViewModel extends AndroidViewModel
         AllWeathers = weatherRepository.getAllWeathers();
     }
 
+    public WeatherRepository getWeatherRepository() {
+        return weatherRepository;
+    }
+    public void delete(Weather...weathers)
+    {
+        weatherRepository.delete(weathers);
+    }
+
     public LiveData<List<Weather>> getAllWeathers() {
         return AllWeathers;
     }

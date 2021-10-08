@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.saigyouji.futabaweather" >
-
+    package="com.saigyouji.futabaweather">
     <!-- 用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 用于访问GPS定位 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->
@@ -22,24 +21,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FutabaWeather" >
+        android:theme="@style/Theme.FutabaWeather">
+        <activity
+            android:name=".view.activity.SettingActivity"
+            android:exported="true" />
+
         <provider
             android:name=".provider.FutabaProvider"
             android:authorities="com.saigyouji.futabaweather.provider"
             android:enabled="true"
-            android:exported="true" >
-        </provider>
+            android:exported="true"></provider>
 
         <activity
             android:name=".view.activity.SearchActivity"
             android:exported="true"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="com.saigyouji.futabaweather.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".view.activity.TestActivity"
@@ -61,16 +64,18 @@
 
         <activity
             android:name=".view.activity.SplashActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.MainActivity"
             android:exported="true"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

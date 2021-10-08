@@ -34,16 +34,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/Medium_14"
-        android:id="@+id/country_manage_temp"
+        android:id="@+id/tv_country_manage_temp"
         android:text="12"
         app:layout_constraintLeft_toRightOf="@+id/tv_country_manage_weather"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_country_manage_name"/>
-    <ImageButton
+    <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_baseline_close_24"
-        android:id="@+id/country_manage_delete"
+        android:id="@+id/iv_country_manage_delete"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

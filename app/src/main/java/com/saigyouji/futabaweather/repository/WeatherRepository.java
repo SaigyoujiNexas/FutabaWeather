@@ -185,5 +185,12 @@ public class WeatherRepository {
             }
         });
     }
+   public void delete(Weather...weathers)
+    {
+        WeatherDatabase.databaseWriteExecutor.execute(() ->
+        {
+            weatherDao.delete(weathers);
+        });
+    }
 }
 
